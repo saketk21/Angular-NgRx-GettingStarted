@@ -1,30 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from './auth.service';
+import { Store, select } from '@ngrx/store';
+import * as fromUser from './state/user.reducer';
+import { getMaskUserName } from './state/user.selectors';
+import { ToggleMaskUsername } from './state/user.actions';
 
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   pageTitle = 'Log In';
 
-  maskUserName: boolean;
+  maskUserName$ = this.store.pipe(select(getMaskUserName));
 
-  constructor(private authService: AuthService, private router: Router) { }
-
-  ngOnInit(): void {
-
-  }
+  constructor(private authService: AuthService, private router: Router, private store: Store<fromUser.UserState>) { }
 
   cancel(): void {
     this.router.navigate(['welcome']);
   }
 
   checkChanged(): void {
-    this.maskUserName = !this.maskUserName;
+    this.store.dispatch(new ToggleMaskUsername());
   }
 
   login(loginForm: NgForm): void {
