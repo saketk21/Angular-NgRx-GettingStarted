@@ -6,7 +6,7 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 import * as fromProduct from '../state/product.reducer';
 import { Store, select } from '@ngrx/store';
-import { ProductActionTypes, ToggleProductCode } from '../state/product.actions';
+import { ToggleProductCode } from '../state/product.actions';
 import { getShowProductCode } from '../state/product.selectors';
 
 @Component({
