@@ -6,8 +6,8 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 import * as fromProduct from '../state/product.reducer';
 import { Store, select } from '@ngrx/store';
-import { ToggleProductCode } from '../state/product.actions';
-import { getShowProductCode } from '../state/product.selectors';
+import { ToggleProductCode, LoadProducts } from '../state/product.actions';
+import { getShowProductCode, getProducts, getProductsError } from '../state/product.selectors';
 
 @Component({
   selector: 'pm-product-list',
@@ -16,11 +16,10 @@ import { getShowProductCode } from '../state/product.selectors';
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   pageTitle = 'Products';
-  errorMessage: string;
 
   showProductCode$ = this.store.pipe(select(getShowProductCode));
-
-  products: Product[];
+  products$ = this.store.pipe(select(getProducts));
+  errorMessage$ = this.store.pipe(select(getProductsError));
 
   // Used to highlight the selected product in the list
   selectedProduct: Product | null;
@@ -32,11 +31,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.sub = this.productService.selectedProductChanges$.subscribe(
       currentProduct => this.selectedProduct = currentProduct
     );
-
-    this.productService.getProducts().subscribe({
-      next: (products: Product[]) => this.products = products,
-      error: err => this.errorMessage = err
-    });
+    this.store.dispatch(new LoadProducts());
   }
 
   ngOnDestroy(): void {
